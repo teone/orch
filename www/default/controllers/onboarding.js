@@ -11,7 +11,14 @@ exports.onboardService = function(service, done){
 exports.onboardSynchronizer = function(syncFolder, done){
   var docker = new Docker();
   
-  docker.createContainer({Image: 'ubuntu', Cmd: ['/bin/bash'], name: 'ubuntu-test'}, function (err, container) {
+  docker.createContainer({
+    Image: 'ubuntu',
+    Cmd: ['/bin/bash'],
+    name: 'ubuntu-test',
+    // Volumes: [
+    //   {'../../sample-service/synchronizer/': '/synchronizer'}
+    // ]
+  }, function (err, container) {
     if (err) {
       return done(err);
     }
