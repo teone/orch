@@ -10,6 +10,7 @@ Vagrant.configure("2") do |config|
 
     config.vm.provision "docker" do |d|
       d.pull_images "ubuntu"
+      d.pull_images "node"
     end
 
     config.vm.provision :shell, :path => "node-bootstrap.sh"
