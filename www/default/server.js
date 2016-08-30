@@ -4,6 +4,7 @@ var app = express();
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/xos');
 
+var onboarding = require('./views/onboarding.js')
 var instances = require('./views/instance.js')
 
 // parse application/json
@@ -14,18 +15,10 @@ app.get('/', function (req, res) {
 });
 
 app.use('/', instances);
-
-app.post('/utility/onboard', function (req, res) {
-
-  console.log(req.body);
-
-  var service = require(req.body.service);
-
-  service.init(app);
-
-  res.send('done');
-});
+app.use('/', onboarding);
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
 });
+
+module.exports = app;
