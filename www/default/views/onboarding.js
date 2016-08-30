@@ -7,7 +7,12 @@ router.post('/utility/onboard', function (req, res) {
   var service = require('../' + req.body.service);
 
   onboardCtrl.onboardService(service, function(err, service){
-    res.send('done');
+    onboardCtrl.onboardSynchronizer('../' + req.body.synchronizer, function(err, sync){
+      if(err){
+        return res.send(err);
+      }
+      res.send(sync);
+    });
   });
 
 });
