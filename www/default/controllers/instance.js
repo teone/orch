@@ -1,12 +1,21 @@
-var Instance = reuquire('../models/instance.js');
+var Instance = require('../models/instance.js');
 
-exports.create = function(instanace){
+exports.create = function(instance, done){
   var model = new Instance(instance);
 
-  instance.save(function(err){
+  model.save(function(err){
     if(err){
-      console.log(err);
+      done(err);
     }
-    console.log(instance)
+    done(null, model);
   })
+};
+
+exports.query = function(done){
+  Instance.find(function(err, instances){
+    if(err){
+      return done(err);
+    }
+    return done(null, instances);
+  });
 }

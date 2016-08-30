@@ -1,5 +1,10 @@
 var mongoose = require('mongoose');
 
-var Instance = mongoose.model('Instance', { name: String, ip: String });
+var instanceSchema = mongoose.Schema({
+  name: String,
+  ip: String
+});
+
+var Instance = mongoose.model('Instance', instanceSchema);
 
 module.exports = Instance;

@@ -1,9 +1,10 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/xos');
 
-// parse application/x-www-form-urlencoded
-// app.use(bodyParser.urlencoded({ extended: false }));
+var instances = require('./views/instance.js')
 
 // parse application/json
 app.use(bodyParser.json());
@@ -11,6 +12,8 @@ app.use(bodyParser.json());
 app.get('/', function (req, res) {
   res.send('Hello World!');
 });
+
+app.use('/', instances);
 
 app.post('/utility/onboard', function (req, res) {
 
