@@ -1,8 +1,10 @@
 (function () {
   'use strict';
-  var channel, q = 'hello';
+  var channel,
+    q = 'example-service',
+    qt = 'example-service-tenant';
 
-  var init = function(app){
+  var init = function(app, emitter){
     app.get('/service', function (req, res) {
       res.send('Hello My Service!');
     });
@@ -11,6 +13,10 @@
       channel.sendToQueue(q, new Buffer(req.body.msg));
       console.log(" [x] Sent '" + req.body.msg + "'");
       res.send(req.body.msg);
+    });
+
+    emitter.on('tenant.save', function(tenant){
+      channel.sendToQueue(qt, new Buffer(JSON.stringify(tenant)));
     });
   };
 

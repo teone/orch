@@ -18,7 +18,11 @@ exports.create = function(tenant, done){
 
   serviceCtrl.get({name: tenant.service}, function(err, service){
     delete tenant.service;
-    tenant.sericeId = service._id;
+    if(!service){
+      done('specified service does not exist!')
+    }
+    tenant.serviceId = service._id;
+
     var model = new Tenant(tenant);
 
     model.save(function(err){

@@ -1,9 +1,10 @@
 var Docker = require('dockerode');
+var docker = new Docker();
 var fs = require('fs');
 var path = require('path');
-var docker = new Docker();
 var rabbit = require('../config/rabbitmq.js');
 var serviceCtrl = require('../controllers/service.js');
+var emitter = require('../config/emitter.js');
 
 // TODO promisify
 var onboardService = function(service, done){
@@ -28,7 +29,7 @@ var onboardService = function(service, done){
 var onboardApi = function(serviceModule, done){
   var service = require('../' + serviceModule);
   var app = require('../server.js');
-  service.init(app);
+  service.init(app, emitter);
   service.pubsub(rabbit.get());
   return done();
 };
@@ -50,6 +51,7 @@ var onboardSynchronizer = function(syncFolder, done){
     console.log('err: ', err);
     console.log('data: ', data);
     console.log('container: ', container);
+    // TODO handle container failure
   })
   .on('container', function (container) {
     return done();
