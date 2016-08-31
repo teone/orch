@@ -3,18 +3,9 @@ var router = express.Router();
 var onboardCtrl = require('../controllers/onboarding.js');
 
 router.post('/utility/onboard', function (req, res) {
-
-  var service = require('../' + req.body.service);
-
-  onboardCtrl.onboardService(service, function(err, service){
-    onboardCtrl.onboardSynchronizer('../' + req.body.synchronizer, function(err, sync){
-      if(err){
-        return res.send(err);
-      }
-      res.send(sync);
-    });
+  onboardCtrl.onboardService(req.body, function(err, service){
+    res.send(service);
   });
-
 });
 
 module.exports = router;

@@ -11,7 +11,7 @@ Enter `./www/default` and run `npm install && npm start`.
 ## Enable a service
 To enable a service run:
 ```
-curl -H "Content-Type: application/json" -X POST -d '{"service":"../sample-service/service.js", "synchronizer": "../sample-service/synchronizer/"}' http://10.0.33.34:3000/utility/onboard
+curl -H "Content-Type: application/json" -X POST -d '{"name": "sample", "api":"../sample-service/service.js", "synchronizer": "../sample-service/synchronizer/"}' http://10.0.33.34:3000/utility/onboard
 ```
 
 This will add the `[GET | POST] /service` endpoint, create a new docker container called `ubuntu-test` and run the `sample-service/synchronizer` app in it.
@@ -24,3 +24,9 @@ To send an event to the syncronizer:
 ```
 curl -H "Content-Type: application/json" -X POST -d '{"msg":"Run Rabbit!"}' http://10.0.33.34:3000/service
 ```
+
+## NOTES
+
+Get docker container ip: `docker inspect <container> | grep IPAddress`
+
+## Create a Tenant for service
