@@ -9,6 +9,7 @@ mongoose.connect('mongodb://localhost/xos');
 var onboarding = require('./views/onboarding.js')
 var instances = require('./views/instance.js')
 var services = require('./views/service.js')
+var tenants = require('./views/tenant.js')
 
 var rabbit = require('./config/rabbitmq.js');
 
@@ -24,6 +25,7 @@ app.get('/', function (req, res) {
 app.use('/', onboarding);
 app.use('/', instances);
 app.use('/', services);
+app.use('/', tenants);
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');

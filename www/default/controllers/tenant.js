@@ -1,4 +1,5 @@
 var Tenant = require('../models/tenant.js');
+var serviceCtrl = require('../controllers/service.js');
 
 exports.query = function(done){
   Tenant.find(function(err, tenants){
@@ -10,12 +11,22 @@ exports.query = function(done){
 }
 
 exports.create = function(tenant, done){
-  var model = new Tenant(tenant);
 
-  model.save(function(err){
-    if(err){
-      done(err);
-    }
-    done(null, model);
-  })
+  if(!tenant.service){
+    return done('Must specify a service');
+  }
+
+  serviceCtrl.get({name: tenant.service}, function(err, service){
+    delete tenant.service;
+    tenant.sericeId = service._id;
+    var model = new Tenant(tenant);
+
+    model.save(function(err){
+      if(err){
+        return done(err);
+      }
+      return done(null, model);
+    })
+  });
+
 };

@@ -5,6 +5,7 @@ var docker = new Docker();
 var rabbit = require('../config/rabbitmq.js');
 var serviceCtrl = require('../controllers/service.js');
 
+// TODO promisify
 var onboardService = function(service, done){
   onboardSynchronizer('../' + service.synchronizer, function(err, sync){
     if(err){

@@ -30,3 +30,6 @@ curl -H "Content-Type: application/json" -X POST -d '{"msg":"Run Rabbit!"}' http
 Get docker container ip: `docker inspect <container> | grep IPAddress`
 
 ## Create a Tenant for service
+```
+curl -H "Content-Type: application/json" -X POST -d '{"service":"sample", "attributes": {"instanceIp": "1.1.1.1"}}' http://10.0.33.34:3000/core/tenants
+```
