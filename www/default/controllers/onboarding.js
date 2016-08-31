@@ -28,6 +28,8 @@ exports.onboardSynchronizer = function(syncFolder, done){
     console.log('err: ', err);
     console.log('data: ', data);
     console.log('container: ', container);
+  })
+  .on('container', function (container) {
     return done();
   });
 };
