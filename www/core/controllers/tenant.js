@@ -22,6 +22,7 @@ exports.create = function(tenant, done){
       done('specified service does not exist!')
     }
     tenant.serviceId = service._id;
+    tenant.inSync = false;
 
     var model = new Tenant(tenant);
 
@@ -30,6 +31,26 @@ exports.create = function(tenant, done){
         return done(err);
       }
       return done(null, model);
+    })
+  });
+
+};
+
+exports.update = function(req, done){
+
+  Tenant.findOne({_id: req.params.id}, function(err, tenant){
+
+    if(!tenant){
+      return done('No matching tenant');
+    }
+
+    tenant.attributes = req.body.attributes;
+
+    tenant.save(function(err){
+      if(err){
+        return done(err);
+      }
+      return done(null, tenant);
     })
   });
 

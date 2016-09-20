@@ -1,0 +1,14 @@
+{
+  "name": "rest-service-synchronizer",
+  "version": "1.0.0",
+  "description": "An example synchronizer that will synchronize a tenant with an extenal service",
+  "main": "rest-service-synchronizer.js",
+  "scripts": {
+    "start": "node rest-service-synchronizer.js"
+  },
+  "author": "Matteo Scandolo",
+  "license": "Apache 2.0",
+  "dependencies": {
+    "amqplib": "^0.4.2"
+  }
+}

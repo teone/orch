@@ -1,92 +1,96 @@
-var Docker = require('dockerode');
-var docker = new Docker();
-var fs = require('fs');
-var path = require('path');
-var rabbit = require('../config/rabbitmq.js');
-var serviceCtrl = require('../controllers/service.js');
-var emitter = require('../config/emitter.js');
-var P = require('bluebird');
+(function () {
+  'use strict';
 
-var onboardService = function(service, done){
-  // Start the synchronizer container
-  onboardSynchronizer(service)
-  .then(function(sync){
-    // Extend API
-    return onboardApi(service.api)
-  })
-  .then(function(api){
-    // Save a reference to the service
-    return saveService(service)
-  })
-  .then(function(model){
-    return done(null, model); 
-  })
-  .catch(done);
-};
+  var Docker = require('dockerode');
+  var docker = new Docker();
+  var fs = require('fs');
+  var path = require('path');
+  var rabbit = require('../config/rabbitmq.js');
+  var serviceCtrl = require('../controllers/service.js');
+  var emitter = require('../config/emitter.js');
+  var P = require('bluebird');
 
-// Extend core APIs using Service defined APIs
-var onboardApi = P.promisify(function(serviceModule, done){
-  var service = require('../' + serviceModule);
-  var app = require('../server.js');
-  try {
-    service.init(app, emitter, rabbit.get());
-    return done();
-  }
-  catch(e){
-    return done(e);
-  }
-});
+  var onboardService = function(service, done){
+    // Start the synchronizer container
+    onboardSynchronizer(service)
+    .then(function(sync){
+      // Extend API
+      return onboardApi(service.api)
+    })
+    .then(function(api){
+      // Save a reference to the service
+      return saveService(service)
+    })
+    .then(function(model){
+      return done(null, model); 
+    })
+    .catch(done);
+  };
 
-// Create a Docker container to host the synchronizer
-var onboardSynchronizer = P.promisify(function(service, done){
-
-  var syncFolder = path.join(__dirname, '../' + service.synchronizer);
-  var coreFolder = path.join(__dirname, '../');
-  
-  docker.run('node', ['bash', '-c', 'cd /sync; npm install; npm start'], [process.stdout, process.stderr], {
-    name: 'synchronizer-' + service.name,
-    Volumes: {
-      '/sync': {},
-      '/core': {}
-    },
-    "HostConfig": {
-      "Binds": [
-        syncFolder + ':/sync',
-        coreFolder + ':/core'
-      ]
-    },
-    "ExposedPorts": { 
-      "80/tcp": {} 
-    },
-    "PortBindings": { 
-      "80/tcp": [
-        { "HostPort": "8080" }
-      ]
+  // Extend core APIs using Service defined APIs
+  var onboardApi = P.promisify(function(serviceModule, done){
+    var service = require('../' + serviceModule);
+    var app = require('../server.js');
+    try {
+      service.init(app, emitter, rabbit.get());
+      return done();
     }
-  },
-  function (err, data, container) {
-    console.log('err: ', err);
-    console.log('data: ', data);
-    console.log('container: ', container);
-    // TODO handle container failure
-  })
-  .on('container', function (container) {
-    return done();
+    catch(e){
+      return done(e);
+    }
   });
-});
 
-// Store a reference in core for active service
-var saveService = P.promisify(function(service, done){
-  serviceCtrl.create({name: service.name}, function(err, model){
-    if(err){
-      return done(err);
-    }
-    return done(model);
-  })
-});
+  // Create a Docker container to host the synchronizer
+  var onboardSynchronizer = P.promisify(function(service, done){
 
-module.exports = {
-  onboardService: onboardService,
-  onboardApi: onboardApi,
-  onboardSynchronizer: onboardSynchronizer,
-}
+    var syncFolder = path.join(__dirname, '../' + service.synchronizer);
+    var coreFolder = path.join(__dirname, '../');
+    
+    docker.run('node', ['bash', '-c', 'cd /sync; npm install; npm start'], [process.stdout, process.stderr], {
+      name: 'synchronizer-' + service.name,
+      Volumes: {
+        '/sync': {},
+        '/core': {}
+      },
+      "HostConfig": {
+        "Binds": [
+          syncFolder + ':/sync',
+          coreFolder + ':/core'
+        ]
+      },
+      "ExposedPorts": { 
+        "80/tcp": {} 
+      },
+      "PortBindings": { 
+        "80/tcp": [
+          { "HostPort": "8080" }
+        ]
+      }
+    },
+    function (err, data, container) {
+      console.log('err: ', err);
+      console.log('data: ', data);
+      console.log('container: ', container);
+      // TODO handle container failure
+    })
+    .on('container', function (container) {
+      return done();
+    });
+  });
+
+  // Store a reference in core for active service
+  var saveService = P.promisify(function(service, done){
+    serviceCtrl.create({name: service.name}, function(err, model){
+      if(err){
+        return done(err);
+      }
+      return done(model);
+    })
+  });
+
+  module.exports = {
+    onboardService: onboardService,
+    onboardApi: onboardApi,
+    onboardSynchronizer: onboardSynchronizer,
+  }
+})(); 

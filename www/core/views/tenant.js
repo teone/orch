@@ -20,4 +20,13 @@ router.post('/core/tenants', function(req, res, done){
   })
 });
 
+router.put('/core/tenants/:id', function(req, res, done){
+  tenantCtrl.update(req, function(err, tenant){
+    if(err){
+      res.status(500).send(err);
+    }
+    res.send(tenant);
+  })
+});
+
 module.exports = router;
