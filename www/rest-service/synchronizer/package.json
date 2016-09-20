@@ -9,6 +9,8 @@
   "author": "Matteo Scandolo",
   "license": "Apache 2.0",
   "dependencies": {
-    "amqplib": "^0.4.2"
+    "amqplib": "^0.4.2",
+    "bluebird": "^3.4.6",
+    "superagent": "^2.3.0"
   }
 }
