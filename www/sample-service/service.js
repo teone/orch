@@ -5,17 +5,18 @@
     qt = 'example-service-tenant';
 
   var init = function(app, emitter){
-    app.get('/service', function (req, res) {
+    app.get('/sample-service', function (req, res) {
       res.send('Hello My Service!');
     });
 
-    app.post('/service', function(req, res){
+    app.post('/sample-service', function(req, res){
       channel.sendToQueue(q, new Buffer(req.body.msg));
       console.log(" [x] Sent '" + req.body.msg + "'");
       res.send(req.body.msg);
     });
 
     emitter.on('tenant.save', function(tenant){
+      // TODO check that this is a tenant of my service (name-space the events??)
       channel.sendToQueue(qt, new Buffer(JSON.stringify(tenant)));
     });
   };

@@ -21,7 +21,7 @@ amqp.connect('amqp://172.17.0.2', function(err, conn) {
     var q = 'example-service';
 
     ch.assertQueue(q, {durable: false});
-    console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q);
+    console.log(" [*] Waiting for messages in %s.", q);
     ch.consume(q, function(msg) {
       console.log(" [x] Received %s", msg.content.toString());
     }, {noAck: true});
