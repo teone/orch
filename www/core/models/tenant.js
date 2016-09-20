@@ -1,16 +1,27 @@
-var mongoose = require('mongoose');
-var emitter = require('../config/emitter.js');
+(function () {
+  'use strict';
 
-var tenantSchema = mongoose.Schema({
-  name: String,
-  serviceId: mongoose.Schema.Types.ObjectId,
-  attributes: mongoose.Schema.Types.Mixed
-});
+  var mongoose = require('mongoose');
+  var emitter = require('../config/emitter.js');
+  var serviceCtrl = require('../controllers/service.js');
 
-tenantSchema.post('save', function(){
-  emitter.emit('tenant.save', this);
-})
+  var tenantSchema = mongoose.Schema({
+    name: String,
+    serviceId: mongoose.Schema.Types.ObjectId,
+    attributes: mongoose.Schema.Types.Mixed
+  });
 
-var Tenant = mongoose.model('Tenant', tenantSchema);
+  tenantSchema.post('save', function(){
+    serviceCtrl.get({_id: this.serviceId}, function(err, service){
+      if(err){
+        return console.error(err);
+      }
+      emitter.emit(service.name + '.tenant.save', this);
+    })
+  })
 
-module.exports = Tenant;
+  var Tenant = mongoose.model('Tenant', tenantSchema);
+
+  module.exports = Tenant;
+
+})(); 

@@ -41,14 +41,19 @@ var onboardApi = P.promisify(function(serviceModule, done){
 var onboardSynchronizer = P.promisify(function(service, done){
 
   var syncFolder = path.join(__dirname, '../' + service.synchronizer);
+  var coreFolder = path.join(__dirname, '../');
   
   docker.run('node', ['bash', '-c', 'cd /sync; npm install; npm start'], [process.stdout, process.stderr], {
     name: 'synchronizer-' + service.name,
     Volumes: {
-      '/sync': {}
+      '/sync': {},
+      '/core': {}
     },
     "HostConfig": {
-       "Binds": [syncFolder + ':/sync']
+      "Binds": [
+        syncFolder + ':/sync',
+        coreFolder + ':/core'
+      ]
     },
     "ExposedPorts": { 
       "80/tcp": {} 
