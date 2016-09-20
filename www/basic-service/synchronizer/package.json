@@ -1,0 +1,14 @@
+{
+  "name": "basic-service-synchronizer",
+  "version": "1.0.0",
+  "description": "An example synchronizer that will just listen for Events and Log the on the standard output",
+  "main": "basic-service-synchronizer.js",
+  "scripts": {
+    "start": "node basic-service-synchronizer.js"
+  },
+  "author": "Matteo Scandolo",
+  "license": "Apache 2.0",
+  "dependencies": {
+    "amqplib": "^0.4.2"
+  }
+}

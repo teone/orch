@@ -5,41 +5,45 @@ var path = require('path');
 var rabbit = require('../config/rabbitmq.js');
 var serviceCtrl = require('../controllers/service.js');
 var emitter = require('../config/emitter.js');
+var P = require('bluebird');
 
-// TODO promisify
 var onboardService = function(service, done){
-  onboardSynchronizer('../' + service.synchronizer, function(err, sync){
-    if(err){
-      return done(err);
-    }
-    onboardApi(service.api, function(err, api){
-      if(err){
-        return done(err);
-      }
-      saveService(service, function(err, model){
-        if(err){
-          return done(err);
-        }
-        return done(null, model); 
-      })
-    });
-  });
+  // Start the synchronizer container
+  onboardSynchronizer(service)
+  .then(function(sync){
+    // Extend API
+    return onboardApi(service.api)
+  })
+  .then(function(api){
+    // Save a reference to the service
+    return saveService(service)
+  })
+  .then(function(model){
+    return done(null, model); 
+  })
+  .catch(done);
 };
 
-var onboardApi = function(serviceModule, done){
+// Extend core APIs using Service defined APIs
+var onboardApi = P.promisify(function(serviceModule, done){
   var service = require('../' + serviceModule);
   var app = require('../server.js');
-  service.init(app, emitter);
-  service.pubsub(rabbit.get());
-  return done();
-};
+  try {
+    service.init(app, emitter, rabbit.get());
+    return done();
+  }
+  catch(e){
+    return done(e);
+  }
+});
 
-var onboardSynchronizer = function(syncFolder, done){
+// Create a Docker container to host the synchronizer
+var onboardSynchronizer = P.promisify(function(service, done){
 
-  syncFolder = path.join(__dirname, syncFolder);
+  var syncFolder = path.join(__dirname, '../' + service.synchronizer);
   
   docker.run('node', ['bash', '-c', 'cd /sync; npm install; npm start'], [process.stdout, process.stderr], {
-    name: 'synchronizer-' + syncFolder,
+    name: 'synchronizer-' + service.name,
     Volumes: {
       '/sync': {}
     },
@@ -64,16 +68,17 @@ var onboardSynchronizer = function(syncFolder, done){
   .on('container', function (container) {
     return done();
   });
-};
+});
 
-var saveService = function(service, done){
+// Store a reference in core for active service
+var saveService = P.promisify(function(service, done){
   serviceCtrl.create({name: service.name}, function(err, model){
     if(err){
       return done(err);
     }
     return done(model);
   })
-}
+});
 
 module.exports = {
   onboardService: onboardService,
