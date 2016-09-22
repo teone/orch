@@ -2,16 +2,14 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 
-// NOTE move in separate config
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/xos');
-
 var onboarding = require('./views/onboarding.js')
 var instances = require('./views/instance.js')
 var services = require('./views/service.js')
 var tenants = require('./views/tenant.js')
 
 var rabbit = require('./config/rabbitmq.js');
+
+var mongoose = require('./config/mongo.js');
 
 rabbit.init();
 

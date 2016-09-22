@@ -31,3 +31,14 @@ curl -H "Content-Type: application/json" -X POST -d '{"name": "rest-service-tena
 ```
 curl -H "Content-Type: application/json" -X PUT -d '{"attributes": {"q": "dog"}}' http://10.0.33.34:3000/core/tenants/:id
 ```
+
+## View synchronized gifs by tenant
+
+```
+curl http://10.0.33.34:3000/rest-service/gif/rest-service-tenant-1 | jq .
+```
+
+or directly in mongo:
+```
+db.gifs.find({tenantName: 'rest-service-tenant-1'});
+```

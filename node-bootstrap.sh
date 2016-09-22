@@ -12,13 +12,11 @@ apt-get -y update
 apt-get install -y python-software-properties
 apt-get install -y vim git subversion curl
 apt-get install -y memcached build-essential
+apt-get install -y jq
 
-# Add nodejs repo
-add-apt-repository -y ppa:chris-lea/node.js
-apt-get -y update
-
-# Install nodejs
-apt-get install -y nodejs
+# Install nodejs 6
+curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+sudo apt-get install -y nodejs
 
 # Install latest stable version of MongoDB
 apt-get install -y mongodb-10gen

@@ -14,17 +14,24 @@
     // Start the synchronizer container
     onboardSynchronizer(service)
     .then(function(sync){
+      console.log('synchronizer onboarded');
       // Extend API
       return onboardApi(service.api)
     })
     .then(function(api){
+      console.log('service api onboarded');
       // Save a reference to the service
       return saveService(service)
     })
     .then(function(model){
+      console.log('service saved in mongo');
       return done(null, model); 
     })
-    .catch(done);
+    .catch((e) => {
+      console.log(e);
+      // NOTE this does not propagate to the API
+      return done(e);
+    });
   };
 
   // Extend core APIs using Service defined APIs
@@ -44,8 +51,10 @@
   var onboardSynchronizer = P.promisify(function(service, done){
 
     var syncFolder = path.join(__dirname, '../' + service.synchronizer);
-    var serviceFolder = path.join(__dirname, '../' + service.api);
     var coreFolder = path.join(__dirname, '../');
+    var serviceFolder = service.api.split('/');
+    serviceFolder.pop();
+    serviceFolder = path.join(__dirname, '../' + serviceFolder.join('/'));
     
     docker.run('node', ['bash', '-c', 'cd /sync; npm install; npm start'], [process.stdout, process.stderr], {
       name: 'synchronizer-' + service.name,
@@ -87,7 +96,7 @@
       if(err){
         return done(err);
       }
-      return done(model);
+      return done(null, model);
     })
   });
 
