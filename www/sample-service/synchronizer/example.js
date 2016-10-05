@@ -2,7 +2,7 @@ var amqp = require('amqplib/callback_api');
 var Docker = require('dockerode'); //TODO connecto to parent docker
 var docker = new Docker({host: 'http://172.17.0.3'});
 
-setUpContainer = function(tenant){
+var setUpContainer = function(tenant){
   docker.run('node', ['bash', '-c', 'sleep 846000'], [process.stdout, process.stderr], {
     name: 'tenant-' + tenant._id,
   },

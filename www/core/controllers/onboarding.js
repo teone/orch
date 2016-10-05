@@ -55,19 +55,27 @@
     var serviceFolder = service.api.split('/');
     serviceFolder.pop();
     serviceFolder = path.join(__dirname, '../' + serviceFolder.join('/'));
+
+    // this is needed to access docker from inside the container
+    var dockerSock = '/var/run/docker.sock'
+    var dockerDaemon = '/usr/bin/docker'
     
     docker.run('node', ['bash', '-c', 'cd /sync; npm install; npm start'], [process.stdout, process.stderr], {
       name: 'synchronizer-' + service.name,
       Volumes: {
         '/sync': {},
         '/core': {},
-        '/service': {}
+        '/service': {},
+        '/var/run/docker.sock': {},
+        '/usr/bin/docker': {}
       },
       "HostConfig": {
         "Binds": [
           syncFolder + ':/sync',
           coreFolder + ':/core',
-          serviceFolder + ':/service'
+          serviceFolder + ':/service',
+          dockerSock + ':/var/run/docker.sock',
+          dockerDaemon + ':/usr/bin/docker'
         ]
       },
       "ExposedPorts": { 
