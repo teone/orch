@@ -24,8 +24,6 @@ Watch the syncronizer logs with: `docker logs -f synchronizer-rest-service`
 curl -H "Content-Type: application/json" -X POST -d '{"name": "rest-service-tenant-1", "attributes": {"q": "cat"}, "service": "rest-service"}' http://10.0.33.34:3000/core/tenants
 ```
 
-57e1b2d1fc2ef2b922c279a1
-
 ## Update a tenant for this service:
 
 ```

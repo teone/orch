@@ -8,8 +8,6 @@ Vagrant.configure("2") do |config|
     config.vm.synced_folder "./www", "/var/www", create: true
     config.vm.synced_folder ".", "/vagrant", disabled: true
 
-    # config.vm.provision :shell, :path => "docker-host.sh"
-
     config.vm.provision "docker" do |d|
       d.pull_images "ubuntu"
       d.pull_images "rabbitmq"
@@ -19,5 +17,5 @@ Vagrant.configure("2") do |config|
         args: "-h 'rabbitmq'"
     end
 
-    config.vm.provision :shell, :path => "node-bootstrap.sh"
+    # config.vm.provision :shell, :path => "node-bootstrap.sh"
 end
