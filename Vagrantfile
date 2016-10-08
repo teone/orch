@@ -17,5 +17,5 @@ Vagrant.configure("2") do |config|
         args: "-h 'rabbitmq'"
     end
 
-    # config.vm.provision :shell, :path => "node-bootstrap.sh"
+    config.vm.provision :shell, :path => "node-bootstrap.sh"
 end

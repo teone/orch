@@ -16,7 +16,17 @@
           { "HostPort": port }
         ]
       }
-    });
+    },
+    ,
+    function (err, data, container) {
+      console.log('tenant err: ', err);
+      console.log('tenant data: ', data);
+      console.log('tenant container: ', container);
+      // TODO handle container failure
+    })
+    .on('container', function (container) {
+      console.log('container created');
+    }););
   };
 
   amqp.connect('amqp://172.17.0.2', function(err, conn) {
