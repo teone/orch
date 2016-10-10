@@ -7,3 +7,4 @@ docker rm -f $CONTAINERS
 # Clear tenants and services 
 mongo xos --eval "db.services.remove()"
 mongo xos --eval "db.tenants.remove()"
+mongo xos --eval "db.gifs.remove()"

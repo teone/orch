@@ -21,3 +21,10 @@ rabbitmqctl stop_app
 rabbitmqctl reset
 rabbitmqctl start_app
 ```
+
+## Clear data
+To reset the environment (docker containers and db entries), execute:
+```
+cd /var/www/
+./cleanup.sh
+```
