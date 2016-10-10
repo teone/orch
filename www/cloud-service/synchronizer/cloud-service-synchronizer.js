@@ -6,18 +6,21 @@
   const Docker = require('dockerode');
   const docker = new Docker();
 
-  const createTenantContainer = (port) => {
+  console.log('Cloud Synchronizer READY!!');
+
+  const createTenantContainer = (tenant, port) => {
+    console.log(`creating container for cloud tenant:  ${tenant.name} on port: ${port}`);
     docker.run('node', ['bash', '-c', 'sleep 86400'], [process.stdout, process.stderr], {
+      name: tenant.name,
       "ExposedPorts": { 
         "80/tcp": {} 
       },
       "PortBindings": { 
         "80/tcp": [
-          { "HostPort": port }
+          { "HostPort": port.toString() }
         ]
       }
     },
-    ,
     function (err, data, container) {
       console.log('tenant err: ', err);
       console.log('tenant data: ', data);
@@ -26,7 +29,7 @@
     })
     .on('container', function (container) {
       console.log('container created');
-    }););
+    });
   };
 
   amqp.connect('amqp://172.17.0.2', function(err, conn) {
@@ -41,9 +44,9 @@
         const tenant = JSON.parse(msg.content.toString());
         console.log(" [x] Tenant updated %s", tenant.name);
 
-        createTenantContainer(9999);
+        createTenantContainer(tenant, 9999);
         
-          ch.sendToQueue(qt, new Buffer(JSON.stringify(gifModel)))
+          // ch.sendToQueue(qt, new Buffer(JSON.stringify(gifModel)))
       }, {noAck: true});
     });
   });
