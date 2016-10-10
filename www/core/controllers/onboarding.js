@@ -51,6 +51,7 @@
   var onboardSynchronizer = P.promisify(function(service, done){
 
     var syncFolder = path.join(__dirname, '../' + service.synchronizer);
+    console.log(syncFolder);
     var coreFolder = path.join(__dirname, '../');
     var serviceFolder = service.api.split('/');
     serviceFolder.pop();

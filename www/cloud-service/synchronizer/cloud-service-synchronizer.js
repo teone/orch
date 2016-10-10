@@ -8,24 +8,43 @@
   const path = require('path');
   const fs = P.promisifyAll(require("fs"));
 
+  const syncFolder = '/var/www/cloud-service/synchronizer/'
+
   console.log('Cloud Synchronizer READY!!');
 
-  const writeTenantIndex = (tenant) => {
-    console.log(tenant);
-    fs.mkdirAsync(path.join(__dirname, 'tenants', tenant.name))
-    .then(() => {
-      fs.writeFile(path.join(__dirname,'tenants',  tenant.name, 'index.html'), tenant.attributes.message, function(err) {
-          if(err) {
-              return console.log(err);
-          }
+  const mkdir = P.promisify(function (dirPath, done) {
+    fs.mkdirAsync(dirPath)
+    .then((res) => {
+      return done();
+    })
+    .catch(e => {
+      if ( e.code != 'EEXIST' ){
+        return done(e);
+      };
+      // if the dir already exist it's OK
+      return done();
+    })
+  });
 
-          console.log("The file was saved!");
-      });
+  const writeTenantIndex = (tenant) => {
+    mkdir(path.join(__dirname, 'tenants', tenant.name))
+    .then(() => {
+      return fs.writeFileAsync(path.join(__dirname,'tenants',  tenant.name, 'index.html'), tenant.attributes.message);
+    })
+    .then(() => {
+      console.log("The file was saved!");
+    })
+    .catch(e => {
+      throw new Error(e);
     })
   };
 
   const createTenantContainer = (tenant, port) => {
     console.log(`creating container for cloud tenant:  ${tenant.name} on port: ${port}`);
+
+    // reference to the host folder
+    const apacheRoot = path.join(syncFolder, 'tenants', tenant.name);
+
     docker.run('node', ['bash', '-c', 'sleep 86400'], [process.stdout, process.stderr], {
       name: tenant.name,
       "ExposedPorts": { 
@@ -34,6 +53,14 @@
       "PortBindings": { 
         "80/tcp": [
           { "HostPort": port.toString() }
+        ]
+      },
+      Volumes: {
+        '/var/www': {}
+      },
+      "HostConfig": {
+        "Binds": [
+          apacheRoot + ':/var/www',
         ]
       }
     },
