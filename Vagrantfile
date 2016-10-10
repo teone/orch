@@ -12,6 +12,7 @@ Vagrant.configure("2") do |config|
       d.pull_images "ubuntu"
       d.pull_images "rabbitmq"
       d.pull_images "node"
+      d.pull_images "httpd"
 
       d.run "rabbitmq",
         args: "-h 'rabbitmq'"

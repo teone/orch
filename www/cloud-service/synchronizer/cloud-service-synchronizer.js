@@ -5,8 +5,24 @@
   const P = require('bluebird');
   const Docker = require('dockerode');
   const docker = new Docker();
+  const path = require('path');
+  const fs = P.promisifyAll(require("fs"));
 
   console.log('Cloud Synchronizer READY!!');
+
+  const writeTenantIndex = (tenant) => {
+    console.log(tenant);
+    fs.mkdirAsync(path.join(__dirname, 'tenants', tenant.name))
+    .then(() => {
+      fs.writeFile(path.join(__dirname,'tenants',  tenant.name, 'index.html'), tenant.attributes.message, function(err) {
+          if(err) {
+              return console.log(err);
+          }
+
+          console.log("The file was saved!");
+      });
+    })
+  };
 
   const createTenantContainer = (tenant, port) => {
     console.log(`creating container for cloud tenant:  ${tenant.name} on port: ${port}`);
@@ -29,6 +45,7 @@
     })
     .on('container', function (container) {
       console.log('container created');
+      writeTenantIndex(tenant);
     });
   };
 

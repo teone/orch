@@ -20,5 +20,5 @@ curl -H "Content-Type: application/json" -X POST -d '{"name": "cloud-service", "
 Watch the syncronizer logs with: `docker logs -f synchronizer-cloud-service`
 
 ```
-curl -H "Content-Type: application/json" -X POST -d '{"name": "cloud-service-tenant-1", "attributes": {"q": "cat"}, "service": "cloud-service"}' http://10.0.33.34:3000/core/tenants
+curl -H "Content-Type: application/json" -X POST -d '{"name": "cloud-service-tenant-1", "attributes": {"message": "I am a sample message."}, "service": "cloud-service"}' http://10.0.33.34:3000/core/tenants
 ```
