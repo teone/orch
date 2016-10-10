@@ -45,7 +45,7 @@
     // reference to the host folder
     const apacheRoot = path.join(syncFolder, 'tenants', tenant.name);
 
-    docker.run('node', ['bash', '-c', 'sleep 86400'], [process.stdout, process.stderr], {
+    docker.run('httpd', ['bash', '-c', 'apachectl start; sleep 86400'], [process.stdout, process.stderr], {
       name: tenant.name,
       "ExposedPorts": { 
         "80/tcp": {} 
@@ -56,11 +56,11 @@
         ]
       },
       Volumes: {
-        '/var/www': {}
+        '/usr/local/apache2/htdocs': {}
       },
       "HostConfig": {
         "Binds": [
-          apacheRoot + ':/var/www',
+          apacheRoot + ':/usr/local/apache2/htdocs',
         ]
       }
     },

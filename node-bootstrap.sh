@@ -19,7 +19,7 @@ curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 # Install latest stable version of MongoDB
-apt-get install -y mongodb-10gen
+apt-get install -y --force-yes mongodb-10gen
 
 # Victory!
 echo "You're all done! Your are all set!"
