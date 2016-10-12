@@ -8,3 +8,8 @@ docker rm -f $CONTAINERS
 mongo xos --eval "db.services.remove()"
 mongo xos --eval "db.tenants.remove()"
 mongo xos --eval "db.gifs.remove()"
+
+## Cleanup rabbitMq
+docker exec rabbitmq rabbitmqctl stop_app
+docker exec rabbitmq rabbitmqctl reset
+docker exec rabbitmq rabbitmqctl start_app

@@ -1,10 +1,20 @@
-var mongoose = require('mongoose');
+(function () {
+  'use strict';
+  var mongoose = require('mongoose');
+  var io = require('../config/socket.js');
 
-var serviceSchema = mongoose.Schema({
-  name: String,
-  attributes: mongoose.Schema.Types.Mixed
-});
+  var serviceSchema = mongoose.Schema({
+    name: String,
+    attributes: mongoose.Schema.Types.Mixed
+  });
 
-var Service = mongoose.model('Service', serviceSchema);
+  serviceSchema.post('save', function(){
+    var socket = io.getSocket();
+    socket.emit('service.save', this);
+  });
 
-module.exports = Service;
+  var Service = mongoose.model('Service', serviceSchema);
+
+  module.exports = Service;
+
+})(); 

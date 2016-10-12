@@ -37,7 +37,7 @@
   // Extend core APIs using Service defined APIs
   var onboardApi = P.promisify(function(serviceModule, done){
     var service = require('../' + serviceModule);
-    var app = require('../server.js');
+    var app = require('../server.js').app;
     try {
       service.init(app, emitter, rabbit.get());
       return done();

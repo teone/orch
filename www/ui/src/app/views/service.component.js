@@ -30,7 +30,8 @@
     `,
     bindToController: true,
     controllerAs: 'vm',
-    controller: function($http, Services, Onboard){
+    controller: function($http, Services, Onboard, Socket){
+      this.services = [];
       Services.query().$promise
       .then((services) => {
         this.services = services;
@@ -49,6 +50,14 @@
       this.onboard = (service) => {
         Onboard.service(service);
       };
+
+      Socket.on('service.save', (service) => {
+        this.services.push(service);
+      });
+
+      Socket.on('connect', function(){
+        console.log('Socket connected');      
+      });
     }
   });
 })(); 

@@ -18,6 +18,7 @@
   ],
   "dependencies": {
     "ng-xos-lib": "opencord/ng-xos-lib#~1.1.0",
-    "bootstrap-css-only": "~3.3.7"
+    "bootstrap-css-only": "~3.3.7",
+    "angular-socket-io": "~0.7.0"
   }
 }

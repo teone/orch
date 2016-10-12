@@ -5,6 +5,7 @@
     'ui.router',
     'xos.helpers',
     'ngAnimate',
+    'btford.socket-io'
   ])
   .config(($stateProvider, $urlRouterProvider) => {
     $stateProvider
