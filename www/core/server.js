@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
+var cors = require('cors');
 
 var onboarding = require('./views/onboarding.js')
 var instances = require('./views/instance.js')
@@ -12,6 +13,8 @@ var rabbit = require('./config/rabbitmq.js');
 var mongoose = require('./config/mongo.js');
 
 rabbit.init();
+
+app.use(cors());
 
 // parse application/json
 app.use(bodyParser.json());
