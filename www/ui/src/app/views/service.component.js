@@ -54,10 +54,6 @@
       Socket.on('service.save', (service) => {
         this.services.push(service);
       });
-
-      Socket.on('connect', function(){
-        console.log('Socket connected');      
-      });
     }
   });
 })(); 
