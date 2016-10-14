@@ -13,12 +13,15 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Project name</a>
+            <a class="navbar-brand" href="#">Orch</a>
           </div>
           <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-              <li ng-class="{active: vm.path === '/'}"><a href="/">Services</a></li>
-              <li ng-class="{active: vm.path === '/tenants'}"><a href="#/tenants">Tenants</a></li>
+              <li 
+                ng-repeat="route in vm.routes"
+                ng-class="{active: vm.path === route.url}">
+                <a href="#{{route.url}}">{{route.label}}</a>
+              </li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -26,10 +29,37 @@
     `,
     bindToController: true,
     controllerAs: 'vm',
-    controller: function($location, $rootScope){
+    controller: function($location, $rootScope, Socket){
+
+      this.routes = [
+        {
+          label: 'Services',
+          url: '/'
+        },
+        {
+          label: 'Tenants',
+          url: '/tenants'
+        }
+      ];
+
+      this.serviceRoutes = {
+        'rest-service': {
+          label: 'Rest Tenants',
+          url: '/rest-tenant'
+        },
+        'cloud-service': {
+          label: 'Cloud Tenants',
+          url: '/cloud-tenant'
+        }
+      }
+
       $rootScope.$on('$stateChangeSuccess', (event, toState, toParams, fromState, fromParams) => {
         this.path = $location.path();
-      })
+      });
+
+      Socket.on('service.save', (service) => {
+        this.routes.push(this.serviceRoutes[service.name]);
+      });
     }
   });
 })(); 

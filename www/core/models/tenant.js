@@ -4,6 +4,7 @@
   var mongoose = require('mongoose');
   var emitter = require('../config/emitter.js');
   var serviceCtrl = require('../controllers/service.js');
+  var io = require('../config/socket.js');
 
   var tenantSchema = mongoose.Schema({
     name: String,
@@ -23,8 +24,11 @@
         return console.error(err);
       }
       emitter.emit(service.name + '.tenant.save', tenant);
-    })
-  })
+    });
+
+    var socket = io.getSocket();
+    socket.emit('tenant.save', tenant);
+  });
 
   var Tenant = mongoose.model('Tenant', tenantSchema);
 

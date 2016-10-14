@@ -16,6 +16,10 @@
     .state('tenants', {
       url: '/tenants',
       template: '<tenants-list></tenants-list>'
+    })
+    .state('rest-tenant', {
+      url: '/rest-tenant',
+      template: '<rest-tenant></rest-tenant>'
     });
     $urlRouterProvider.otherwise('/');
   });
